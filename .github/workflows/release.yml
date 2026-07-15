@@ -1,0 +1,30 @@
+name: Export model on release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  export-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Train and export model
+        run: python src/train_and_export.py
+
+      - name: Upload assets to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/model.pkl
+            dist/metrics.json
