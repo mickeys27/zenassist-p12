@@ -21,6 +21,11 @@ jobs:
       - name: Train and export model
         run: python src/train_and_export.py
 
+      - name: Analyze metrics with Mistral
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: python src/analyze_metrics.py
+
       - name: Upload assets to release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -28,3 +33,4 @@ jobs:
           files: |
             dist/model.pkl
             dist/metrics.json
+            dist/analysis.md
